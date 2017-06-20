@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # @Author: codykochmann
 # @Date:     2017-04-06 13:35:45
-# @Last Modified time: 2017-05-21
+# @Last Modified time: 2017-06-20 11:06:37
 
 from collections import namedtuple
 import inspect
@@ -85,7 +85,7 @@ class stricttuple():
         assert len(args) == 1
         assert type(args[0]) == str
         assert all(type(v) in allowed_types for v in kwargs.values())
-        
+
         lambda_type = type(lambda:1)
         allowed_types_in_tuples = type, lambda_type
         self.__saved_rules__={}
@@ -143,6 +143,7 @@ if __name__ == '__main__':
              lambda y:y<15 and y>=0
         )
     )
+
     from random import randint
     for i in range(32):
         t = Point(

@@ -2,11 +2,40 @@
 # -*- coding: utf-8 -*-
 # @Author: codykochmann
 # @Date:     2017-04-06 13:35:45
-# @Last Modified time: 2017-07-03 09:43:42
+# @Last Modified time: 2017-07-03 13:27:15
 
 from collections import namedtuple
 import inspect
 import sys
+
+"""
+stricttuple - rule based data containers
+
+This library is designed to restrict the inputs of your code by limiting what
+the variables can become. This way, you'll know the full scope of what your code
+is capable of messing up.
+
+Example Usage:
+
+    Point = stricttuple(
+        "Point",
+        x = (
+             lambda x:type(x)==int,
+             lambda x:x<15 and x>=0
+        ),
+        y = (
+             lambda y:type(y)==int,
+             lambda y:y<15 and y>=0
+        )
+    )
+
+Creates read only Point objects with two fields (x and y) that can only legally
+be generated if the values of x and y are ints and between 0 and 15.
+
+    Point(x=5, y=6)         good
+    Point(x='fish', y=6)    bad
+    Point(x=21, y=6)        bad
+"""
 
 class typedtuple(object):
     """ typedtuple is a namedtuple with type enforcement """
@@ -62,6 +91,34 @@ class typedtuple(object):
         return self.namedtuple(**kwargs)
 
 class stricttuple():
+    """
+stricttuple - rule based data containers
+
+This library is designed to restrict the inputs of your code by limiting what
+the variables can become. This way, you'll know the full scope of what your code
+is capable of messing up.
+
+Example Usage:
+
+    Point = stricttuple(
+        "Point",
+        x = (
+             lambda x:type(x)==int,
+             lambda x:x<15 and x>=0
+        ),
+        y = (
+             lambda y:type(y)==int,
+             lambda y:y<15 and y>=0
+        )
+    )
+
+Creates read only Point objects with two fields (x and y) that can only legally
+be generated if the values of x and y are ints and between 0 and 15.
+
+    Point(x=5, y=6)         good
+    Point(x='fish', y=6)    bad
+    Point(x=21, y=6)        bad
+"""
     @staticmethod
     def extract_types(*args):
         return (i for i in args if type(i) == type)

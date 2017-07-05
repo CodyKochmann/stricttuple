@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # @Author: codykochmann
 # @Date:     2017-04-06 13:35:45
-# @Last Modified time: 2017-07-03 13:27:15
+# @Last Modified time: 2017-07-05 11:50:56
 
 from collections import namedtuple
 import inspect
@@ -36,6 +36,9 @@ be generated if the values of x and y are ints and between 0 and 15.
     Point(x='fish', y=6)    bad
     Point(x=21, y=6)        bad
 """
+
+class IllegalTypedTuple(Exception):
+    """exception raised when an illegal typedtuple is created"""
 
 class typedtuple(object):
     """ typedtuple is a namedtuple with type enforcement """
@@ -77,7 +80,7 @@ class typedtuple(object):
             value = kwargs[field]
             required_type = self.fields[field]
             if type(value) != required_type:
-                raise TypeError('{}.{} needs to be a {}, recieved: {}({})'.format(
+                raise IllegalTypedTuple('{}.{} needs to be a {}, recieved: {}({})'.format(
                     self.name,
                     field,
                     required_type.__name__,
@@ -89,6 +92,10 @@ class typedtuple(object):
             returns a namedtuple with those fields and values """
         self.validate_fields(**kwargs)
         return self.namedtuple(**kwargs)
+
+
+class IllegalStrictTuple(Exception):
+    """exception raised when an illegal stricttuple is created"""
 
 class stricttuple():
     """
@@ -156,7 +163,6 @@ be generated if the values of x and y are ints and between 0 and 15.
                         self.__saved_rules__[k].append(lambda _:type(_)==i)
                     else:
                         self.__saved_rules__[k].append(i)
-        #print(self.__saved_rules__)
 
     def __call__(self, **kwargs):
         """ validates that the values match the specifications and
@@ -165,7 +171,7 @@ be generated if the values of x and y are ints and between 0 and 15.
             v = kwargs[k]
             for r in self.__saved_rules__[k]:
                 if not r(v):
-                    sys.exit('stricttuple rule violation\ninstruction:\n\t{}.{} = {}({})\nviolates the rule:\n\t{}'.format(
+                    raise IllegalStrictTuple('\n------------------------------------\ninstruction:\n\t{}.{} = {}({})\nviolates the rule:\n\t{}\n------------------------------------'.format(
                         self.name,
                         k,
                         type(v).__name__,

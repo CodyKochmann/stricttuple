@@ -2,11 +2,10 @@
 # -*- coding: utf-8 -*-
 # @Author: codykochmann
 # @Date:     2017-04-06 13:35:45
-# @Last Modified time: 2017-07-05 11:50:56
+# @Last Modified time: 2017-07-05 11:52:24
 
 from collections import namedtuple
-import inspect
-import sys
+from inspect import getsource
 
 """
 stricttuple - rule based data containers
@@ -176,7 +175,7 @@ be generated if the values of x and y are ints and between 0 and 15.
                         k,
                         type(v).__name__,
                         repr(v),
-                        inspect.getsource(r).strip()
+                        getsource(r).strip()
                         ))
         return self.namedtuple(**kwargs)
 

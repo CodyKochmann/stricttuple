@@ -6,6 +6,7 @@
 
 from collections import namedtuple
 from inspect import getsource
+from prettytable import PrettyTable
 
 """
 stricttuple - rule based data containers
@@ -38,6 +39,25 @@ be generated if the values of x and y are ints and between 0 and 15.
 
 class IllegalTypedTuple(Exception):
     """exception raised when an illegal typedtuple is created"""
+    pass
+
+class namedtuple_converter():
+    @staticmethod
+    def to_table(nt):
+        table = PrettyTable(('name','value'),header=False,sortby='name')
+        for f in nt._fields:
+            table.add_row((f,getattr(nt,f)))
+        table.align['name']='l'
+        table.align['value']='l'
+        table.valign='m'
+        return table.get_string()
+
+    @staticmethod
+    def to_dict(nt):
+        """ converts a namedtuple to a dictionary """
+        #assert isinstance(nt, namedtuple), 'input needs to be a namedtuple'
+        return { f: getattr(nt, f) for f in nt._fields}
+
 
 class typedtuple(object):
     """ typedtuple is a namedtuple with type enforcement """
@@ -177,7 +197,11 @@ be generated if the values of x and y are ints and between 0 and 15.
                         repr(v),
                         getsource(r).strip()
                         ))
-        return self.namedtuple(**kwargs)
+        nt = self.namedtuple(**kwargs)
+        nt_type = type(nt)
+        nt_type.__repr__ = namedtuple_converter.to_table
+        return nt_type(**namedtuple_converter.to_dict(nt))
+
 
 if __name__ == '__main__':
 
@@ -198,18 +222,18 @@ if __name__ == '__main__':
         "Point",
         x = (
              lambda x:type(x)==int,
-             lambda x:x<15 and x>=0
+             lambda x:x<150 and x>=0
         ),
         y = (
              lambda y:type(y)==int,
-             lambda y:y<15 and y>=0
+             lambda y:y<150 and y>=0
         )
     )
 
     from random import randint
     for i in range(32):
         t = Point(
-            x=randint(0, 15),
-            y=randint(0, 16)
+            x=randint(0, 150),
+            y=randint(0, 150)
         )
-        print(t)
+        print(repr(t))

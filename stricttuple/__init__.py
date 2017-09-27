@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # @Author: codykochmann
 # @Date:     2017-04-06 13:35:45
-# @Last Modified time: 2017-09-27 09:18:23
+# @Last Modified time: 2017-09-27 09:28:45
 
 from collections import namedtuple
 from inspect import getsource
@@ -53,7 +53,10 @@ class namedtuple_converter():
             table.valign='m'
             return table.get_string()
         except:
-            return namedtuple.__repr__(nt)
+            try:
+                return '{}({})'.format(type(nt).__name__,{f:getattr(nt,f) for f in nt._fields})
+            except:
+                return tuple.__repr__(nt)
 
     @staticmethod
     def to_dict(nt):
@@ -220,6 +223,20 @@ if __name__ == '__main__':
     )
 
     print(t)
+
+    HardToPrint = stricttuple(
+        'HardToPrint',
+        data=(
+            lambda data:type(data) == list,
+            lambda data:len(data) > 0
+        )
+    )
+
+    print(HardToPrint(data=[
+        iter(range(1,10)),
+        iter(range(30,40)),
+        (i for i in range(60))
+    ]))
 
     Point = stricttuple(
         "Point",

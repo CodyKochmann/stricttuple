@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # @Author: codykochmann
 # @Date:     2017-04-06 13:35:45
-# @Last Modified time: 2017-07-05 11:52:24
+# @Last Modified time: 2017-09-27 09:18:23
 
 from collections import namedtuple
 from inspect import getsource
@@ -44,13 +44,16 @@ class IllegalTypedTuple(Exception):
 class namedtuple_converter():
     @staticmethod
     def to_table(nt):
-        table = PrettyTable(('name','value'),header=False,sortby='name')
-        for f in nt._fields:
-            table.add_row((f,getattr(nt,f)))
-        table.align['name']='l'
-        table.align['value']='l'
-        table.valign='m'
-        return table.get_string()
+        try:
+            table = PrettyTable(('name','value'),header=False,sortby='name')
+            for f in nt._fields:
+                table.add_row((f,getattr(nt,f)))
+            table.align['name']='l'
+            table.align['value']='l'
+            table.valign='m'
+            return table.get_string()
+        except:
+            return namedtuple.__repr__(nt)
 
     @staticmethod
     def to_dict(nt):

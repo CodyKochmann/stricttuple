@@ -37,6 +37,47 @@ be generated if the values of x and y are ints and between 0 and 15.
     Point(x=21, y=6)        bad
 """
 
+def shorten(string, max_length=80, trailing_chars=3):
+    ''' trims the 'string' argument down to 'max_length' to make previews to long string values '''
+    assert type(string).__name__ in {'str', 'unicode'}, 'shorten needs string to be a string, not {}'.format(type(string))
+    assert type(max_length) == int, 'shorten needs max_length to be an int, not {}'.format(type(max_length))
+    assert type(trailing_chars) == int, 'shorten needs trailing_chars to be an int, not {}'.format(type(trailing_chars))
+    assert max_length > 0, 'shorten needs max_length to be positive, not {}'.format(max_length)
+    assert trailing_chars >= 0, 'shorten needs trailing_chars to be greater than or equal to 0, not {}'.format(trailing_chars)
+
+    return (
+        string
+    ) if len(string) <= max_length else (
+        '{before:}...{after:}'.format(
+            before=string[:max_length-(trailing_chars+3)],
+            after=string[-trailing_chars:] if trailing_chars>0 else ''
+        )
+    )
+
+def is_prettytable(string):
+    """ returns true if the input looks like a prettytable """
+    return type(string).__name__ in {'str','unicode'} and (
+        len(string.splitlines()) > 1
+    ) and (
+        all(string[i] == string[-i-1] for i in range(3))
+    )
+
+def _format_value(self, field, value):
+        if isinstance(value, int) and field in self._int_format:
+            value = self._unicode(("%%%sd" % self._int_format[field]) % value)
+        elif isinstance(value, float) and field in self._float_format:
+            value = self._unicode(("%%%sf" % self._float_format[field]) % value)
+        else:
+            try:
+                s_v = str(value)
+                if not is_prettytable(s_v):
+                    return shorten(s_v)
+                else:
+                    return self._unicode(value)
+            except Exception as e:
+                return self._unicode(value)
+PrettyTable._format_value = _format_value
+
 class IllegalTypedTuple(Exception):
     """exception raised when an illegal typedtuple is created"""
     pass
@@ -208,6 +249,42 @@ be generated if the values of x and y are ints and between 0 and 15.
         nt_type.__repr__ = namedtuple_converter.to_table
         return nt_type(**namedtuple_converter.to_dict(nt))
 
+if __name__ == '__main__':
+    s='''+-------+----------------------------------------------------------------------------------+
+            |   a   |                                        b                                         |
+            +-------+----------------------------------------------------------------------------------+
+            | hello | jaohfphe8q9wtr3289th238tr03u290r31u4820184u9201u4r93120u3492rew89pwequf8jh...qpj |
+            | hello | jaohfphe8q9wtr3289th238tr03u290r31u4820184u9201u4r93120u3492rew89pwequf8jh...qpj |
+            | hello | jaohfphe8q9wtr3289th238tr03u290r31u4820184u9201u4r93120u3492rew89pwequf8jh...qpj |
+            | hello | jaohfphe8q9wtr3289th238tr03u290r31u4820184u9201u4r93120u3492rew89pwequf8jh...qpj |
+            | hello | jaohfphe8q9wtr3289th238tr03u290r31u4820184u9201u4r93120u3492rew89pwequf8jh...qpj |
+            | hello | jaohfphe8q9wtr3289th238tr03u290r31u4820184u9201u4r93120u3492rew89pwequf8jh...qpj |
+            | hello | jaohfphe8q9wtr3289th238tr03u290r31u4820184u9201u4r93120u3492rew89pwequf8jh...qpj |
+            | hello | jaohfphe8q9wtr3289th238tr03u290r31u4820184u9201u4r93120u3492rew89pwequf8jh...qpj |
+            | hello | jaohfphe8q9wtr3289th238tr03u290r31u4820184u9201u4r93120u3492rew89pwequf8jh...qpj |
+            | hello | jaohfphe8q9wtr3289th238tr03u290r31u4820184u9201u4r93120u3492rew89pwequf8jh...qpj |
+            | hello | jaohfphe8q9wtr3289th238tr03u290r31u4820184u9201u4r93120u3492rew89pwequf8jh...qpj |
+            | hello | jaohfphe8q9wtr3289th238tr03u290r31u4820184u9201u4r93120u3492rew89pwequf8jh...qpj |
+            | hello | jaohfphe8q9wtr3289th238tr03u290r31u4820184u9201u4r93120u3492rew89pwequf8jh...qpj |
+            | hello | jaohfphe8q9wtr3289th238tr03u290r31u4820184u9201u4r93120u3492rew89pwequf8jh...qpj |
+            | hello | jaohfphe8q9wtr3289th238tr03u290r31u4820184u9201u4r93120u3492rew89pwequf8jh...qpj |
+            | hello | jaohfphe8q9wtr3289th238tr03u290r31u4820184u9201u4r93120u3492rew89pwequf8jh...qpj |
+            | hello | jaohfphe8q9wtr3289th238tr03u290r31u4820184u9201u4r93120u3492rew89pwequf8jh...qpj |
+            | hello | jaohfphe8q9wtr3289th238tr03u290r31u4820184u9201u4r93120u3492rew89pwequf8jh...qpj |
+            | hello | jaohfphe8q9wtr3289th238tr03u290r31u4820184u9201u4r93120u3492rew89pwequf8jh...qpj |
+            | hello | jaohfphe8q9wtr3289th238tr03u290r31u4820184u9201u4r93120u3492rew89pwequf8jh...qpj |
+            | hello | jaohfphe8q9wtr3289th238tr03u290r31u4820184u9201u4r93120u3492rew89pwequf8jh...qpj |
+            | hello | jaohfphe8q9wtr3289th238tr03u290r31u4820184u9201u4r93120u3492rew89pwequf8jh...qpj |
+            | hello | jaohfphe8q9wtr3289th238tr03u290r31u4820184u9201u4r93120u3492rew89pwequf8jh...qpj |
+            | hello | jaohfphe8q9wtr3289th238tr03u290r31u4820184u9201u4r93120u3492rew89pwequf8jh...qpj |
+            | hello | jaohfphe8q9wtr3289th238tr03u290r31u4820184u9201u4r93120u3492rew89pwequf8jh...qpj |
+            | hello | jaohfphe8q9wtr3289th238tr03u290r31u4820184u9201u4r93120u3492rew89pwequf8jh...qpj |
+            | hello | jaohfphe8q9wtr3289th238tr03u290r31u4820184u9201u4r93120u3492rew89pwequf8jh...qpj |
+            | hello | jaohfphe8q9wtr3289th238tr03u290r31u4820184u9201u4r93120u3492rew89pwequf8jh...qpj |
+            | hello | jaohfphe8q9wtr3289th238tr03u290r31u4820184u9201u4r93120u3492rew89pwequf8jh...qpj |
+            | hello | jaohfphe8q9wtr3289th238tr03u290r31u4820184u9201u4r93120u3492rew89pwequf8jh...qpj |
+            +-------+----------------------------------------------------------------------------------+'''
+    print(is_prettytable(s))
 
 if __name__ == '__main__':
 
@@ -257,3 +334,10 @@ if __name__ == '__main__':
             y=randint(0, 150)
         )
         print(repr(t))
+
+    t = PrettyTable(('a','b'))
+    for i in range(30):
+        t.add_row(('hello','jaohfphe8q9wtr3289th238tr03u290r31u4820184u9201u4r93120u3492rew89pwequf8jh9qph8tp42qhfweiopjeiwoqfpjiewodqpfwejiweoqpj'))
+    s = t.get_string()
+    t.add_row(('and a table',s))
+    print(t.get_string())

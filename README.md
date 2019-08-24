@@ -2,18 +2,22 @@
 
 Python tuples with built in rule enforcement.
 
-
 [![Downloads](https://pepy.tech/badge/stricttuple)](https://pepy.tech/project/stricttuple)
 [![Downloads](https://pepy.tech/badge/stricttuple/month)](https://pepy.tech/project/stricttuple)
 [![Downloads](https://pepy.tech/badge/stricttuple/week)](https://pepy.tech/project/stricttuple)
 [![Known Vulnerabilities](https://snyk.io//test/github/CodyKochmann/stricttuple/badge.svg?targetFile=requirements.txt)](https://snyk.io//test/github/CodyKochmann/stricttuple?targetFile=requirements.txt)
 
+## How to install it?
+
+```
+pip install stricttuple
+```
 
 This library is designed to restrict the inputs of your code by limiting what
 the variables can become. This way, you'll know the full scope of what your code
 is capable of messing up.
 
-Example Usage:
+## Example Usage:
 
 ```python
 In [1]: from stricttuple import stricttuple

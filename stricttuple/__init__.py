@@ -76,7 +76,7 @@ def _format_value(self, field, value):
                     return self._unicode(value)
             except Exception as e:
                 return self._unicode(value)
-PrettyTable._format_value = _format_value
+#PrettyTable._format_value = _format_value
 
 class IllegalTypedTuple(Exception):
     """exception raised when an illegal typedtuple is created"""
